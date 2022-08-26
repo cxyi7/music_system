@@ -15,6 +15,7 @@
     "vue-router": "^4.1.4"
   },
   "devDependencies": {
+    "@typescript-eslint/parser": "^5.35.1",
     "@vitejs/plugin-vue": "^3.0.3",
     "eslint": "^8.22.0",
     "eslint-config-airbnb-base": "^15.0.0",

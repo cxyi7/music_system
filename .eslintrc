@@ -16,7 +16,9 @@
     "import"
   ],
   // 配置当前JavaScript语言的支持环境，默认是 ECMAScript 5 语法。该配置可以覆盖原有配置，以启用对 ECMAScript 其它版本和 JSX 的支持
-  "parserOptions": [
-    
-  ]
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  }
 }
