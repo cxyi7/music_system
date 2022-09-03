@@ -17,7 +17,7 @@ export default () => {
             // Generate corresponding .eslintrc-auto-import.json file.
             // eslint globals Docs - https://eslint.org/docs/user-guide/configuring/language-options#specifying-globals
             eslintrc: {
-            enabled: true, // Default `false`
+            enabled: false, // Default `false`
             filepath: './build/.eslintrc-auto-import.json', // Default `./.eslintrc-auto-import.json`
             globalsPropValue: true, // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
              },
