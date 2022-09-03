@@ -1,5 +1,5 @@
 {
-  // 配置表示继承其他模块相关的eslint 配置
+  // 配置表示继承其他模块相关的eslint配置
   "extends": [
     "./build/eslintrc-auto-import.json",
     "plugin:@typescript-eslint/recommended",
@@ -7,85 +7,73 @@
     "plugin:vue/vue3-recommended",
     "plugin:prettier/recommended"
   ],
-  // 配置用于规定一个环境定义了一组预定义的全局变量
+  // 配置定义了一组预定义的全局变量
   "env": {
     "browser": true,
-    "es2021": true,
-    "node": true
+    "node": true,
+     "es2022": true
   },
-  // 配置表示以插件的模式进行复用第三方的eslint配置依赖包
+  // 配置第三方插件，插件名称可以省略 eslint-plugin- 前缀
   "plugins": [
     "vue",
-    "@typescript-eslint",
-    "import"
+    "import",
+    "@typescript-eslint"
   ],
-  // 配置用于添加该环境下的自定义的全局变量的变量名以防止eslint 报错
-  "globals": {
-    "defineEmits": true,
-    "document": true,
-    "localStorage": true,
-    "GLOBAL_VAR": true,
-    "window": true,
-    "defineProps": true,
-    "defineExpose": true,
-    "AMap": true,
-    "AMapUI": true
-  },
   // 配置当前JavaScript语言的支持环境，默认是 ECMAScript 5 语法。该配置可以覆盖原有配置，以启用对 ECMAScript 其它版本和 JSX 的支持
   "parserOptions": {
     "parser": "@typescript-eslint/parser",
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "allowImportExportEverywhere": true
-  },
+    "allowImportExportEverywhere": true // ignore eslint error: 'import' and 'export' may only appear at the top level
+  }, 
   // 配置文件添加共享设置，或者自定义规则而且使它们可以访问到相同的信息
   "settings": {
-    "import/extensions": [
+    "import/extensions": [ // ---> eslint-plugin-import 插件相关配置
       ".js",
       ".jsx",
       ".ts",
       ".tsx"
     ]
   },
-  //  配置自定义eslint规则覆盖或者关闭原有相关配置
-  "rules": {
-    "prettier/prettier": [
-      "error",
-      {
-        "printWidth": 130,
-        "proseWrap": "never"
-      }
-    ],
-    "radix": "off", // parseInt方法不强制使用第二个参数
-    "func-names": "off", // 允许函数没有名称
-    "no-bitwise": "off", // 允许使用按位符
-    "no-console": "off", // 允许使用 console
-    "no-continue": "off", // 允许使用 continue
-    "no-underscore-dangle": "off", // 允许变量使用下划线
-    "no-restricted-syntax": "off", // 无限制语法
-    "no-plusplus": "off", // 允许使用++，--
-    "no-use-before-define": "off", // 允许在定义变量之前使用它们
-    "no-unused-expressions": "off", // 允许使用三元表达式
-    "no-cond-assign": "off",
-    "class-methods-use-this": "off", // 关闭class中未使用this调用的方法警告
-    "consistent-return": "off", // 函数不一定有返回值
-    "global-require": "off", // 可以在任意地方使用require
-    "no-param-reassign": "off", // 允许修改函数参数arguments
-    "@typescript-eslint/no-var-requires": "off",
-    "no-multi-assign": "off", // 允许使用 a=b=c
-    "no-shadow": "off", // 关闭外部作用域中的变量不能与它所包含的作用域中的变量或参数同名
-    "no-unsafe-optional-chaining": "off",
-    "default-param-last": "off", // 关闭函数默认参数必须在最后
-    "guard-for-in": "off", // 关闭要求 for-in 循环中有一个 if 语句
-    "import/extensions": "off", // 关闭导入的文件省略后缀
-    "import/no-unresolved": "off", // 关闭没有找到对应模块报错
-    "import/no-extraneous-dependencies": "off",
-    "import/prefer-default-export": "off", // 关闭单个导出时必须使用默认导出
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off", // 关闭在导出的函数和类的公共类方法上要求显式的返回和参数类型
-    "vue/first-attribute-linebreak": "off" // 关闭vue模板第一属性换行
-  },
-  // 为指定的文件配置解析规则
+    //  配置自定义eslint规则覆盖或者关闭原有相关配置
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "printWidth": 130,
+          "proseWrap": "never"
+        }
+      ],
+      "radix": "off", // parseInt方法不强制使用第二个参数
+      "func-names": "off", // 允许函数没有名称
+      "no-bitwise": "off", // 允许使用按位符
+      "no-console": "off", // 允许使用 console
+      "no-continue": "off", // 允许使用 continue
+      "no-underscore-dangle": "off", // 允许变量使用下划线
+      "no-restricted-syntax": "off", // 无限制语法
+      "no-plusplus": "off", // 允许使用++，--
+      "no-use-before-define": "off", // 允许在定义变量之前使用它们
+      "no-unused-expressions": "off", // 允许使用三元表达式
+      "no-cond-assign": "off",
+      "class-methods-use-this": "off", // 关闭class中未使用this调用的方法警告
+      "consistent-return": "off", // 函数不一定有返回值
+      "global-require": "off", // 可以在任意地方使用require
+      "no-param-reassign": "off", // 允许修改函数参数arguments
+      "@typescript-eslint/no-var-requires": "off",
+      "no-multi-assign": "off", // 允许使用 a=b=c
+      "no-shadow": "off", // 关闭外部作用域中的变量不能与它所包含的作用域中的变量或参数同名
+      "no-unsafe-optional-chaining": "off",
+      "default-param-last": "off", // 关闭函数默认参数必须在最后
+      "guard-for-in": "off", // 关闭要求 for-in 循环中有一个 if 语句
+      "import/extensions": "off", // 关闭导入的文件省略后缀
+      "import/no-unresolved": "off", // 关闭没有找到对应模块报错
+      "import/no-extraneous-dependencies": "off",
+      "import/prefer-default-export": "off", // 关闭单个导出时必须使用默认导出
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off", // 关闭在导出的函数和类的公共类方法上要求显式的返回和参数类型
+      "vue/first-attribute-linebreak": "off" // 关闭vue模板第一属性换行
+    },
+  // 为指定的文件配置解析规则  --> eslint-plugin-vue 插件相关配置
   "overrides": [
     {
       "files": [
