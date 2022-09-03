@@ -15,3 +15,4 @@ This template should help get you started developing with Vue 3 in Vite. The tem
     2. eslint-plugin-prettier
     3. stylelint-config-prettier
 [prettier配置地址](https://prettier.io/docs/en/options.html)
+[设置git commit hooks 地址](https://www.prettier.cn/docs/precommit.html)

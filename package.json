@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .vue,.js,.jsx,.ts,.tsx ./src/  --max-warnings 0",
-    "lint:fix": "eslint --ext .vue,.js,.jsx,.ts,.tsx ./src/ --max-warnings 0 --fix"
+    "lint:fix": "eslint --ext .vue,.js,.jsx,.ts,.tsx ./src/ --max-warnings 0 --fix",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@vueuse/core": "^9.1.0",
@@ -26,9 +27,17 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^9.4.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "unplugin-auto-import": "^0.11.2",
     "unplugin-vue-components": "^0.22.4",
     "vite": "^3.0.7"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,vue,ts,tsx}": [
+      "prettier --write",
+      "npm run lint:fix"
+    ]
   }
 }
