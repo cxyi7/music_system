@@ -11,4 +11,15 @@ export default defineConfig({
       '@': resolve(__dirname, './src'), // 把 @ 指向到 src 目录去
     },
   },
+  css: {
+    preprocessorOptions: {
+      // 自动全局引入less变量文件
+      less: {
+        javascriptEnabled: true, // 防止用户输入可执行代码
+        modifyVars: {
+          hack: `true;@import (reference) '${resolve('src/assets/less/var.less')}';`,
+        },
+      },
+    },
+  },
 })

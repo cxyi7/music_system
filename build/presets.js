@@ -2,6 +2,7 @@ import vue from '@vitejs/plugin-vue'; // vue解析
 import AutoImport from 'unplugin-auto-import/vite'; // 自动引入组件
 import Components from 'unplugin-vue-components/vite'; // 自动解析成组件
 import { TDesignResolver } from 'unplugin-vue-components/resolvers'; // 组件resolvers
+import WindiCSS from 'vite-plugin-windicss'
 
 export default () => {
     return [
@@ -34,5 +35,6 @@ export default () => {
               }),
             ],
           }),
+        WindiCSS(),
     ]
 }

@@ -31,3 +31,17 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 * autoprefixer
 * postcss-less
 * postcss-pxtorem
+
+
+## windicss
+* vite-plugin-windicss
+* [文档地址](https://windicss.org/integrations/vite.html)
+* [Typography](https://windicss.org/plugins/official/typography.html)
+
+
+## less
+* [全局引入less详解](https://www.kuxiaoxin.com/archives/56#)
+* [css hooks](https://www.w3cschool.cn/css/css-hack.html)
+* [less 配置项](https://lesscss.org/usage/#less-options-strict-units)
+* src\design\index.less：全局样式，在main.ts中使用。
+* src\design\config.less：全局变量，在vite.config.ts中使用。

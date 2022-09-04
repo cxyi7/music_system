@@ -6,6 +6,10 @@
     {
       "files": ["**/*.(html|vue)"],
       "customSyntax": "postcss-html"
+    },
+    {
+      "files": ["*.less", "**/*.less"],
+      "customSyntax": "postcss-less"
     }
   ],
   "rules": {
