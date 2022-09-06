@@ -9,11 +9,6 @@ export default defineConfig({
   plugins: [typography(), lineclamp],
   preflight: false, // 是否重置css样式
   theme: {
-    //   fontFamily: {
-    //     sans: ['Open Sans', 'ui-sans-serif', 'system-ui'],
-    //     serif: ['Montserrat', 'ui-serif', 'Georgia'],
-    //     mono: ['Fira Sans', 'ui-monospace', 'SFMono-Regular'],
-    //   },
     extend: {
       typography: {
         DEFAULT: {
