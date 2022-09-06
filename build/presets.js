@@ -15,7 +15,7 @@ export default () => {
       imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'], // 引入框架方法
       resolvers: [
         TDesignResolver({
-          library: 'vue-next', // 选择指定的库
+          library: 'vue-next', // 选择指定的库 按需引入
         }),
       ],
       // Generate corresponding .eslintrc-auto-import.json file.
@@ -34,7 +34,7 @@ export default () => {
       dirs: ['src/components/'], // 要搜索组件的目录的相对路径。
       resolvers: [
         TDesignResolver({
-          library: 'vue-next',
+          library: 'vue-next', // 按需引入
         }),
       ],
     }),
