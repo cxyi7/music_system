@@ -93,7 +93,7 @@
         "vue/component-name-in-template-casing": [
           2,
           "kebab-case"
-        ],
+    ],
         "vue/require-default-prop": 0,
         "vue/multi-word-component-names": 0,
         "vue/no-reserved-props": 0,

@@ -8,18 +8,19 @@
       "customSyntax": "postcss-html"
     },
     {
-      "files": ["*.less", "**/*.less"],
+      "files": ["**/*.less"],
       "customSyntax": "postcss-less"
     }
   ],
   "rules": {
+    "font-family-no-duplicate-names": null,
     "string-quotes": "single",
     "at-rule-empty-line-before": null,
     "at-rule-no-unknown": null,
     "at-rule-name-case": "lower",
     "shorthand-property-no-redundant-values": true,
     "number-leading-zero": null,
-    "declaration-block-no-duplicate-properties": true,
+    "declaration-block-no-duplicate-properties": null,
     "no-descending-specificity": true,
     "selector-max-id": 1,
     "indentation": [2, { "severity": "warning" }],
