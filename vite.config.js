@@ -10,8 +10,8 @@ export default defineConfig((env) => {
   // build -> (.env,.env.production)
   const viteEnv = loadEnv(env.mode, process.cwd());
   return {
-    base: viteEnv,
-    plugins: presets(),
+    base: viteEnv.VITE_BASE, // 开发或生产环境服务的公共基础路径
+    plugins: presets(env.mode),
     resolve: {
       // 别名设置，如果需要在编辑器能更好的识别别名，需要配置jsconfig.json文件
       alias: {
@@ -20,9 +20,9 @@ export default defineConfig((env) => {
     },
     server: {
       host: true, // host设置为true才可以使用network的形式，以ip访问项目
-      port: 8080, // 使用的端口号
+      port: 3000, // 使用的端口号
       strictPort: false, // 当端口号被占用时，尝试下一个可用端口
-      open: false, // 取消自动打开浏览器
+      open: true, // 自动打开浏览器
       cors: true, // 允许跨域
       proxy: {
         // 接口代理

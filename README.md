@@ -45,3 +45,6 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 * [less 配置项](https://lesscss.org/usage/#less-options-strict-units)
 * src\design\index.less：全局样式，在main.ts中使用。
 * src\design\config.less：全局变量，在vite.config.ts中使用。
+
+## TDsign
+* [组件库通用的 Design Token 均使用 css variables 声明，你可以在自己的项目中声明同名变量来覆盖他们的值](https://github.com/Tencent/tdesign-common/blob/develop/style/web/theme/_light.less)
