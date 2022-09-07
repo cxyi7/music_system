@@ -13,6 +13,8 @@
     }
   ],
   "rules": {
+    "selector-class-pattern": null,
+    "selector-pseudo-class-no-unknown": null,
     "font-family-no-duplicate-names": null,
     "string-quotes": "single",
     "at-rule-empty-line-before": null,
