@@ -13,18 +13,33 @@
         </t-submenu>
       </template>
       <!-- 用户信息 -->
-      <template #userinfo>
-        <t-tooltip v-if="user.info" placement="bottom" theme="light" trigger="click">
-          <t-avatar :image="user.userInfo.avatar" :hide-on-load-failed="true">{{ user.userInfo.nickName }}</t-avatar>
-          <template #content>
-            <div>退出登录</div>
-          </template>
-        </t-tooltip>
+      <template #operations>
+        <t-space>
+          <t-dropdown :options="options" trigger="click" :hide-after-item-click="false" :min-column-width="100">
+            <t-avatar :image="user.userInfo.avatar" :hide-on-load-failed="true" />
+            <div>{{ user.userInfo.nickName }}</div>
+          </t-dropdown>
+        </t-space>
       </template>
     </t-head-menu>
   </t-header>
 </template>
-<script setup></script>
+<script setup>
+import { MessagePlugin } from 'tdesign-vue-next';
+
+const options = [
+  {
+    content: '个人中心',
+    value: 1,
+    onClick: () => MessagePlugin.success('个人中心'),
+  },
+  {
+    content: '退出登录',
+    value: 2,
+    onClick: () => MessagePlugin.success('退出登录'),
+  },
+];
+</script>
 <style lang="less" scoped>
 .header {
   // menu-item文字颜色

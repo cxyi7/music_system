@@ -10,5 +10,8 @@ declare module '@vue/runtime-core' {
     Header: typeof import('./../src/components/Header.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TContent: typeof import('tdesign-vue-next')['Content']
+    TFooter: typeof import('tdesign-vue-next')['Footer']
+    TLayout: typeof import('tdesign-vue-next')['Layout']
   }
 }
