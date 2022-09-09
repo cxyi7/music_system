@@ -240,7 +240,7 @@ export default class Ajax {
     return storage.localStorage.getItem('token');
   }
 
-  // 发送请求前设置参数
+  // 发送请求前设置参数, 可重写该方法
   onBefore(config) {
     console.log(config);
   }
