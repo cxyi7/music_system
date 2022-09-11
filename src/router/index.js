@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'; // 使用hash模式
 import NProgress from 'nprogress';
-import api from '@/api';
+import api from '@/service';
 import pinia from '@/store';
 import useUserStore from '@/store/user';
 

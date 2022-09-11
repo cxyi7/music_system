@@ -11,7 +11,7 @@
   "env": {
     "browser": true,
     "node": true,
-     "es2022": true
+    "es2022": true
   },
   // 配置第三方插件，插件名称可以省略 eslint-plugin- 前缀
   "plugins": [
@@ -98,7 +98,9 @@
         "vue/multi-word-component-names": 0,
         "vue/no-reserved-props": 0,
         "vue/no-v-html": 0,
-        "vue/valid-template-root": 0
+        "vue/valid-template-root": 0,
+        "vue/no-template-key": 0,
+        "vue/valid-v-for": 0
       }
     }
   ]

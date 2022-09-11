@@ -268,7 +268,7 @@ const asyncRoutes = [
   },
 ];
 
-export function isAsyncRoutes(name) {
+export function isAsyncRoute(name) {
   const arr = [...asyncRoutes];
   let item;
   while ((item = arr.shift())) {

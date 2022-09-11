@@ -1,6 +1,6 @@
 <template>
   <t-header>
-    <t-head-menu v-module="currentMenu" class="header bg-cyan-300" expand-type="popup">
+    <t-head-menu v-model="currMenu" class="header bg-cyan-300" expand-type="popup">
       <!-- Logo -->
       <template #logo></template>
       <!-- 菜单栏 只允许二级路由，不能再嵌套子路由 -->
@@ -26,6 +26,12 @@
 </template>
 <script setup>
 import { MessagePlugin } from 'tdesign-vue-next';
+import { findLast } from 'lodash';
+import useUserStore from '@/store/user';
+import asyncRoutes from '@/router/routeAsync';
+
+const router = useRouter();
+const user = useUserStore();
 
 const options = [
   {
@@ -39,16 +45,39 @@ const options = [
     onClick: () => MessagePlugin.success('退出登录'),
   },
 ];
+
+const menuList = computed(() => {
+  if (!import.meta.env.DEV) return user.menuInfo;
+  return createLocalRoutes(asyncRoutes);
+});
+
+// 构建路由菜单
+const createLocalRoutes = (routes) => {
+  if (!routes) return null;
+  return routes
+    .filter((item) => item.meat?.title)
+    .map((item) => {
+      return {
+        children: createLocalRoutes(item.children),
+        name: item.meta.title,
+        perms: item.name,
+      };
+    });
+};
+
+// 获取当前激活的
+const currMenu = computed({
+  get: () => findLast(router.currentRoute.value.matched, (item) => item.meta.title)?.name,
+  set: (name) => router.push({ name }),
+});
 </script>
 <style lang="less" scoped>
 .header {
-  // menu-item文字颜色
   --td-font-gray-1: rgb(255 255 255 / 90%);
   --td-font-gray-2: rgb(255 255 255 / 80%);
-  // menu-item背景颜色
   --td-gray-color-1: #a5f3fc;
   --td-gray-color-2: #a5f3fc;
-  // 二级菜单弹框内的文字和背景色
+
   :deep(.t-menu__popup) {
     --td-gray-color-1: #ecf2fe;
     --td-font-gray-2: #999;
