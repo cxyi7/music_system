@@ -34,6 +34,7 @@ export default defineConfig((env) => {
       },
     },
     build: {
+      target: 'es2022',
       outDir: `dist/${viteEnv.VITE_BASE}`, // 打包生成的文件放在该目录下
       minify: 'terser', // 文件混淆
       brotliSize: false, // 是否显示打包后文件压缩结果，由于vite不支持打包压缩，关闭此功能可以加快打包速度

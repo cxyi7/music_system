@@ -26,7 +26,7 @@ const useUserStore = defineStore('admin', {
     // 获取菜单信息
     async getMenuInfo() {
       if (this.menus) return;
-      this.menus = await api.get('platform/menu/getRouters');
+      this.menus = await api.get('/platform/menu/getRouters');
     },
     // 登录
     async login(data) {

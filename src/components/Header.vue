@@ -16,8 +16,8 @@
       <template #operations>
         <t-space>
           <t-dropdown :options="options" trigger="click" :hide-after-item-click="false" :min-column-width="100">
-            <t-avatar :image="user.userInfo.avatar" :hide-on-load-failed="true" />
-            <div>{{ user.userInfo.nickName }}</div>
+            <t-avatar :image="user.adminInfo.avatar" :hide-on-load-failed="true" />
+            <div>{{ user.adminInfo.nickName }}</div>
           </t-dropdown>
         </t-space>
       </template>
