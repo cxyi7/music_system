@@ -155,7 +155,7 @@ const asyncRoutes = [
   {
     path: '/sranking',
     name: 'sranking',
-    meta: { title: '推荐管理' },
+    meta: { title: '榜单管理' },
     redirect: '/sranking/list',
     children: [
       {
