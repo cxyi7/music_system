@@ -2,14 +2,12 @@
   <t-header>
     <t-head-menu v-model="currMenu" class="header bg-cyan-300" expand-type="popup">
       <!-- Logo -->
-      <template #logo></template>
+      <!-- <template #logo></template> -->
       <!-- 菜单栏 只允许二级路由，不能再嵌套子路由 -->
       <template v-for="subitem in menuList" :key="subitem.value">
-        <t-menu-item v-if="!subitme.child || !subitem.child.length" :value="subitem.menu">{{ subitem.name }}</t-menu-item>
-        <t-submenu v-else :value="subitem.menu" :title="subitem.name">
-          <template v-for="menuitem in subitem.child" :key="menuitem.value">
-            <t-menu-item :value="menuitem.menu">{{ menuitem.name }}</t-menu-item>
-          </template>
+        <t-menu-item v-if="!subitem.children || !subitem.children.length" :value="subitem.perms">{{ subitem.name }}</t-menu-item>
+        <t-submenu v-else :value="subitem.perms" :title="subitem.name">
+          <Menu :data="subitem.children"></Menu>
         </t-submenu>
       </template>
       <!-- 用户信息 -->
@@ -17,7 +15,7 @@
         <t-space>
           <t-dropdown :options="options" trigger="click" :hide-after-item-click="false" :min-column-width="100">
             <t-avatar :image="user.adminInfo.avatar" :hide-on-load-failed="true" />
-            <div>{{ user.adminInfo.nickName }}</div>
+            <span>{{ user.adminInfo.nickName }}</span>
           </t-dropdown>
         </t-space>
       </template>
@@ -29,6 +27,7 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { findLast } from 'lodash';
 import useUserStore from '@/store/user';
 import asyncRoutes from '@/router/routeAsync';
+import storage from '@/utils/storage';
 
 const router = useRouter();
 const user = useUserStore();
@@ -42,7 +41,12 @@ const options = [
   {
     content: '退出登录',
     value: 2,
-    onClick: () => MessagePlugin.success('退出登录'),
+    onClick: async () => {
+      await user.logout();
+      storage.localStorage.removeItem('MUSIC-TOKEN');
+      router.push('/login');
+      MessagePlugin.success('退出登录');
+    },
   },
 ];
 
@@ -55,7 +59,7 @@ const menuList = computed(() => {
 const createLocalRoutes = (routes) => {
   if (!routes) return null;
   return routes
-    .filter((item) => item.meat?.title)
+    .filter((item) => item.meta?.title)
     .map((item) => {
       return {
         children: createLocalRoutes(item.children),
@@ -73,11 +77,14 @@ const currMenu = computed({
 </script>
 <style lang="less" scoped>
 .header {
+  // z-index: 9999;
+  // menu-item文字颜色
   --td-font-gray-1: rgb(255 255 255 / 90%);
   --td-font-gray-2: rgb(255 255 255 / 80%);
-  --td-gray-color-1: #a5f3fc;
-  --td-gray-color-2: #a5f3fc;
-
+  // menu-item背景颜色
+  --td-gray-color-1: rgb(0 74 179 / 80%);
+  --td-gray-color-2: rgb(0 74 179 / 90%);
+  // 二级菜单弹框内的文字和背景色
   :deep(.t-menu__popup) {
     --td-gray-color-1: #ecf2fe;
     --td-font-gray-2: #999;

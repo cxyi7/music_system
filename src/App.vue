@@ -29,7 +29,7 @@ const isFullScreen = computed(() => {
 </script>
 <style lang="less" scoped>
 .main {
-  background: #fff;
+  background: #f5f7fd;
 }
 
 .content-wrap {

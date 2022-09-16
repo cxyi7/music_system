@@ -6,7 +6,6 @@ import { TDesignResolver } from 'unplugin-vue-components/resolvers'; // 组件re
 import viteCompression from 'vite-plugin-compression'; // 打包压缩
 import WindiCSS from 'vite-plugin-windicss'; // 下一代工具优先的 CSS 框架
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
-import { viteMockServe } from 'vite-plugin-mock'; // 引入mock数据
 
 export default () => {
   return [
@@ -53,10 +52,6 @@ export default () => {
       iconDirs: [path.resolve(process.cwd(), 'src/assets/svgs')],
       // 指定symbolId格式
       symbolId: 'icon-[dir]-[name]',
-    }),
-    viteMockServe({
-      // default
-      mockPath: 'src/mock',
     }),
     WindiCSS(),
   ];

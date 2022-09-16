@@ -1,8 +1,107 @@
 <template>
-  <div class="w-screen h-screen">
-    <div class="login-left">
-      <img src="../../assets/images/login.png" class="img" alt="花雨音乐" />
+  <div class="login w-screen h-screen">
+    <!-- 登录表单 -->
+    <div class="login-bg">
+      <SvgIcon name="login" :icon-style="iconStyle"></SvgIcon>
     </div>
+    <t-form ref="form" class="login-form" :data="formData" :rules="rules" :label-width="0" @submit="onSubmit">
+      <div class="login-form-header font-sans text-center">
+        <h1 class="login-form-title">花雨音乐后台管理系统</h1>
+        <p class="login-form-label">欢迎使用，请登录您的账号</p>
+      </div>
+      <div class="login-form-right">
+        <p class="login-form-label">用户名</p>
+        <t-form-item name="username">
+          <t-input v-model="formData.username" clearable placeholder="">
+            <template #prefix-icon>
+              <desktop-icon />
+            </template>
+          </t-input>
+        </t-form-item>
+        <p class="login-form-label">密码</p>
+        <t-form-item name="password">
+          <t-input v-model="formData.password" type="password" clearable placeholder="">
+            <template #prefix-icon>
+              <lock-on-icon />
+            </template>
+          </t-input>
+        </t-form-item>
+        <t-form-item style="padding-top: 8px">
+          <t-button theme="primary" type="submit" block>登录</t-button>
+        </t-form-item>
+      </div>
+    </t-form>
   </div>
 </template>
-<script setup></script>
+<script>
+import { MessagePlugin } from 'tdesign-vue-next';
+import { DesktopIcon, LockOnIcon } from 'tdesign-icons-vue-next';
+import useUserStore from '@/store/user';
+
+export default {
+  name: 'Login',
+};
+</script>
+<script setup>
+const iconStyle = {
+  width: '500px',
+  height: '500px',
+};
+
+const userStore = useUserStore();
+const router = useRouter();
+
+// 校验规则
+const rules = {
+  username: [{ required: true, message: '必填', trigger: 'blur' }],
+  password: [{ required: true, message: '必填', trigger: 'blur' }],
+  code: [{ required: true, message: '必填', trigger: 'blur' }],
+};
+// 登录表单
+const formData = reactive({
+  username: '',
+  password: '',
+});
+
+// 登录
+const onSubmit = async ({ validateResult, firstError, e }) => {
+  e.preventDefault();
+  if (validateResult) {
+    await userStore.login(formData);
+    router.push('/');
+  } else {
+    console.log('Validate Errors: ', firstError, validateResult);
+    MessagePlugin.error(firstError);
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.login {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  &-form {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    width: 500px;
+    height: 400px;
+    transform: translateX(-50%);
+
+    &-label {
+      margin-bottom: 5px;
+      color: rgb(107 114 128 / 50%);
+    }
+  }
+
+  &-bg {
+    position: absolute;
+    left: 100px;
+    width: 500px;
+    height: 500px;
+  }
+}
+</style>

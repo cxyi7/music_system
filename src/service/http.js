@@ -74,7 +74,6 @@ export default class Ajax {
     // 全局axios请求拦截
     this.axiosInstance.interceptors.request.use(
       (config) => {
-        console.log(config);
         this.defaultOptions.onBefore(config);
         this.addPendingRequest(config);
         return config;
@@ -127,7 +126,6 @@ export default class Ajax {
         this.addPendingRequest(config); // 重新添加进请求池等待下一次请求
       } else {
         // 为post则允许重复提交
-        console.log(config);
         if (!config.repeat) throw new Error('操作太频繁，请稍等片刻~');
         config.cancelToken =
           config.cancelToken ||
@@ -207,14 +205,13 @@ export default class Ajax {
   // 默认的loading
   onLoading(option) {
     return {
-      start: console.log(`开启loading，参数：${option}`),
-      close: console.log(`关闭loading`),
+      start: () => console.log(`开启loading，参数：${option}`),
+      close: () => console.log(`关闭loading`),
     };
   }
 
   // 开启loading
   startLoading(options) {
-    console.log(options);
     if (!this.defaultOptions.onLoading) return;
     if (loadingList.length && !options) {
       loadingList[loadingList.length - 1].count++;
@@ -328,7 +325,6 @@ export default class Ajax {
       // 无缓存的情况下调用接口，添加loading
       this.startLoading(options.loading);
       const res = await this.axiosInstance(config); // 当前实例的配置对象
-      console.log(res);
       // 是否直接返回整个返回值
       if (options.needHeaders) return res;
       // 对于第三方接口及返回非标准格式，则直接返回，不做处理
