@@ -14,6 +14,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@videojs-player/vue": "^1.0.0",
     "@vueuse/core": "^9.1.0",
     "axios": "^0.27.2",
     "echarts": "^5.3.3",
@@ -24,6 +25,7 @@
     "qs": "^6.11.0",
     "tdesign-icons-vue-next": "^0.1.5",
     "tdesign-vue-next": "^0.20.5",
+    "video.js": "^7.20.3",
     "vue": "^3.2.37",
     "vue-router": "^4.1.5"
   },

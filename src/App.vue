@@ -9,10 +9,10 @@
           </t-breadcrumbItem>
           <template #separator>/</template>
         </t-breadcrumb>
+        <div class="content-body flex flex-col flex-1" :class="{ 'full-screen': isFullScreen }">
+          <component :is="Component" />
+        </div>
       </t-content>
-      <div class="content-body flex flex-col flex-1" :class="{ 'full-screen': isFullScreen }">
-        <component :is="Component" />
-      </div>
     </t-layout>
   </router-view>
 </template>
@@ -33,6 +33,7 @@ const isFullScreen = computed(() => {
 }
 
 .content-wrap {
+  height: 50px;
   margin: 30px 40px 50px;
   overflow: auto;
 }

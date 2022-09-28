@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import TDesign from 'tdesign-vue-next';
+import VueVideoPlayer from '@videojs-player/vue';
 import pinia from '@/store';
 import router from './router';
 import App from './App.vue';
@@ -10,6 +11,7 @@ import '@/assets/less/index.less';
 import 'virtual:windi.css';
 import 'virtual:windi-devtools';
 import 'virtual:svg-icons-register'; // 导入雪碧图
+import 'video.js/dist/video-js.css';
 
 const app = createApp(App);
 
@@ -17,5 +19,6 @@ const app = createApp(App);
 app.use(pinia);
 app.use(router);
 app.use(TDesign);
+app.use(VueVideoPlayer);
 
 app.mount('#app');

@@ -1,8 +1,10 @@
 <template>
   <t-header>
-    <t-head-menu v-model="currMenu" class="header bg-cyan-300" expand-type="popup">
+    <t-head-menu v-model="currMenu" class="header" expand-type="popup">
       <!-- Logo -->
-      <!-- <template #logo></template> -->
+      <template #logo>
+        <img :src="logoImg" width="180" height="64" alt="花雨音乐" />
+      </template>
       <!-- 菜单栏 只允许二级路由，不能再嵌套子路由 -->
       <template v-for="subitem in menuList" :key="subitem.value">
         <t-menu-item v-if="!subitem.children || !subitem.children.length" :value="subitem.perms">{{ subitem.name }}</t-menu-item>
@@ -28,6 +30,8 @@ import { findLast } from 'lodash';
 import useUserStore from '@/store/user';
 import asyncRoutes from '@/router/routeAsync';
 import storage from '@/utils/storage';
+
+const logoImg = new URL('../assets/images/logo.png', import.meta.url).href;
 
 const router = useRouter();
 const user = useUserStore();
@@ -75,19 +79,3 @@ const currMenu = computed({
   set: (name) => router.push({ name }),
 });
 </script>
-<style lang="less" scoped>
-.header {
-  // z-index: 9999;
-  // menu-item文字颜色
-  --td-font-gray-1: rgb(255 255 255 / 90%);
-  --td-font-gray-2: rgb(255 255 255 / 80%);
-  // menu-item背景颜色
-  --td-gray-color-1: rgb(0 74 179 / 80%);
-  --td-gray-color-2: rgb(0 74 179 / 90%);
-  // 二级菜单弹框内的文字和背景色
-  :deep(.t-menu__popup) {
-    --td-gray-color-1: #ecf2fe;
-    --td-font-gray-2: #999;
-  }
-}
-</style>

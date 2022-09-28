@@ -7,10 +7,12 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    FormItem: typeof import('./../src/components/FormItem.vue')['default']
     Header: typeof import('./../src/components/Header.vue')['default']
     Menu: typeof import('./../src/components/Menu.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchForm: typeof import('./../src/components/SearchForm.vue')['default']
     SvgIcon: typeof import('./../src/components/SvgIcon.vue')['default']
     TAvatar: typeof import('tdesign-vue-next')['Avatar']
     TBreadcrumb: typeof import('tdesign-vue-next')['Breadcrumb']
@@ -23,6 +25,7 @@ declare module '@vue/runtime-core' {
     THeader: typeof import('tdesign-vue-next')['Header']
     THeadMenu: typeof import('tdesign-vue-next')['HeadMenu']
     TInput: typeof import('tdesign-vue-next')['Input']
+    TInputNumber: typeof import('tdesign-vue-next')['InputNumber']
     TLayout: typeof import('tdesign-vue-next')['Layout']
     TMenuItem: typeof import('tdesign-vue-next')['MenuItem']
     TSpace: typeof import('tdesign-vue-next')['Space']

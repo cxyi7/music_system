@@ -2,14 +2,14 @@
   <div class="login w-screen h-screen">
     <!-- 登录表单 -->
     <div class="login-bg">
-      <SvgIcon name="login" :icon-style="iconStyle"></SvgIcon>
+      <SvgIcon name="login-bg" :icon-style="iconStyle"></SvgIcon>
     </div>
     <t-form ref="form" class="login-form" :data="formData" :rules="rules" :label-width="0" @submit="onSubmit">
       <div class="login-form-header font-sans text-center">
         <h1 class="login-form-title">花雨音乐后台管理系统</h1>
         <p class="login-form-label">欢迎使用，请登录您的账号</p>
       </div>
-      <div class="login-form-right">
+      <div>
         <p class="login-form-label">用户名</p>
         <t-form-item name="username">
           <t-input v-model="formData.username" clearable placeholder="">
@@ -83,25 +83,25 @@ const onSubmit = async ({ validateResult, firstError, e }) => {
   height: 100%;
   overflow: hidden;
 
+  &-bg {
+    position: absolute;
+    top: 14%;
+    left: 14%;
+    width: 500px;
+    height: 500px;
+  }
+
   &-form {
     position: absolute;
     top: 30%;
-    left: 50%;
+    right: 20%;
     width: 500px;
     height: 400px;
-    transform: translateX(-50%);
 
     &-label {
       margin-bottom: 5px;
       color: rgb(107 114 128 / 50%);
     }
-  }
-
-  &-bg {
-    position: absolute;
-    left: 100px;
-    width: 500px;
-    height: 500px;
   }
 }
 </style>
