@@ -1,60 +1,56 @@
 import Qs from 'qs';
 import axios from 'axios';
 import { isObject, isArray, isString, isFunction, mergeWith, merge } from 'lodash';
-import storage from '../utils/storage.js';
+import storage from '../utils/storage';
+// import { downLoadFile } from '../exportFile';
+// import Polling from '../polling';
 
 const responseMap = new Map(); // 返回结果缓存池
 const pendingRequest = new Map(); // 请求池
-const responseHandle = new Map(); // res处理池： 根据返回数据code使用不同的处理方法
+const responseHandle = new Map(); // res处理池：根据返回数据code使用不同的处理方法
 const loadingList = []; // loading池
-
 export default class Ajax {
   /**
-   * @param {string} baseUrl   基础请求地址
-   * @param {object} options   全局配置，可以被局部配置覆盖
+   * @param { String } baseURL        基础请求地址
+   * @param { Object } options        全局配置，可以被局部覆盖
    */
-  constructor(baseUrl = '', options = {}) {
-    // 全局api url
-    this.baseUrl = baseUrl;
-
-    // ajax基础配置
+  constructor(baseURL = '', options = {}) {
+    // 全局的api url
+    this.baseURL = baseURL;
+    // ajax全局配置
     this.defaultOptions = {
-      timeout: 2000, // 超时时间
-      withCredentials: true, // 允许跨域
+      timeout: 20000, // 超时时间
+      withCredentials: true, // 跨域
       headers: { 'Content-Type': 'application/json;charset=UTF-8' }, // 默认json格式
       parmasExclude: ['page'], // 防重复请求排除字段, /xxx/pageList?page=1和/xxx/pageList?page=2会排除page参数所以相当于同一个请求
       onError: this.onError, // 默认错误处理，默认只是在控制台打印错误
       onBefore: this.onBefore, // 默认发送请求之前处理方法
-      onAfter: this.onAfter, // 默认发送请求之后处理方法
+      onAfter: this.onAfter, // 默认的发送请求之后处理方法
       onLoading: this.onLoading, // loading方法,返回loading的实例【必须包含start和close方法,否则loading将无法启用/关闭】
       // onDownloadFile: downLoadFile, // 默认的文件下载方法
-      getToekn: this.getToekn, // 获取token
+      tokenName: 'token', // 拼接下载地址时拼接的名字
+      getToken: this.getToken, // 获取token
     };
-
     if (!isObject(options)) {
-      throw new Error('new Request参数 options 期望是一个Object!!!');
+      throw new Error('new Http 参数 options 期望是一个 Object!!!');
     }
 
     // 合并options
-    /**
-     * @params objVal 对象的属性值
-     * @params srcVal 对象的属性值
-     */
-    mergeWith(this.defaultOptions, options, (objVal, srcVal) => {
-      if (isArray(objVal)) return objVal.concat(srcVal); // 如果是属性值是数组，则合并
-      if (isString(objVal) || isFunction(objVal)); // 如果是字符串或方法，则覆盖
-      return merge(objVal, srcVal); // 返回新的处理过的对象
+    mergeWith(this.defaultOptions, options, (objValue, srcValue) => {
+      if (isArray(objValue)) return objValue.concat(srcValue);
+      if (isString(objValue) || isFunction(objValue)) return srcValue;
+      return merge(objValue, srcValue);
     });
 
     // 初始化axios实例
     this.init();
-    // 添加默认的response数据处理方法
+    // 添加默认的Response数据处理方法
     this.addResponseHandle(200, ({ data }) => data);
     this.addResponseHandle(403, () => {
-      throw new Error('您没有权限访问，请重新登录或联系管理员！');
+      throw new Error('您没有权限访问~');
     });
     this.addResponseHandle(500, () => {
-      throw new Error('服务器异常，请稍后再试！');
+      throw new Error('服务器异常~');
     });
     this.addResponseHandle('default', ({ msg }) => {
       throw new Error(msg);
@@ -63,13 +59,16 @@ export default class Ajax {
 
   // 初始化axios实例
   init() {
-    // axios实例对象 --> 是一个函数，可以接收参数
     this.axiosInstance = axios.create({
-      baseURL: this.baseUrl,
+      baseURL: this.baseURL,
       timeout: this.defaultOptions.timeout,
       withCredentials: this.defaultOptions.withCredentials,
       headers: this.defaultOptions.headers,
-      paramsSerializer: (params) => Qs.stringify(params, { indices: false }), // 请求默认的格式化程序
+      paramsSerializer: (params) => Qs.stringify(params, { indices: false }), // get请求默认的格式化程序
+      // qs.stringify({ids: [1, 2, 3]}, { indices: false })  返回：ids=1&ids=2&id=3
+      // qs.stringify({ids: [1, 2, 3]}, {arrayFormat: ‘indices‘})  返回：ids[0]=1&aids1]=2&ids[2]=3
+      // qs.stringify({ids: [1, 2, 3]}, {arrayFormat: ‘brackets‘})  返回：ds[]=1&ids[]=2&ids[]=3
+      // qs.stringify({ids: [1, 2, 3]}, {arrayFormat: ‘repeat‘})  返回：ids=1&ids=2&id=3
     });
     // 全局axios请求拦截
     this.axiosInstance.interceptors.request.use(
@@ -96,21 +95,21 @@ export default class Ajax {
     );
   }
 
-  // 每个请求根据method,url,params,data生成key
-  // 用来取消重复请求，会过滤paramssExclude字段
+  // 每个请求根据method、url、params、data生成Key
+  // 用来取消重复请求,会过滤parmasExclude的字段
   generateReqKey(config) {
     const { method, url, params = {}, data } = config;
-    // 如果请求中包含paramsExclude设置中的字段名称，则忽略该字段
+    // 如果请求中包含parmasExclude设置中的字段名称，则忽略该字段
     const parmasExclude = config.parmasExclude || this.defaultOptions.parmasExclude;
     const newData = typeof data === 'string' ? JSON.parse(data) : data;
     const newParams = parmasExclude.reduce(
-      (pre, cur) => {
-        delete pre[cur];
-        return pre;
+      (a, key) => {
+        delete a[key];
+        return a;
       },
       { ...params },
     );
-    // key由请求方式,url,参数组成一个key
+    // key由请求方式、url、参数组成一个key
     return [method, url, Qs.stringify(newParams), Qs.stringify(newData)].join('&');
   }
 
@@ -119,13 +118,13 @@ export default class Ajax {
     const requestKey = this.generateReqKey(config);
     if (pendingRequest.has(requestKey)) {
       if (config.method === 'get') {
-        // get请求，若存在重复，则取消之前已经发送的请求
-        const concelToken = pendingRequest.get(requestKey);
-        concelToken(requestKey); // 取消请求
-        pendingRequest.delete(requestKey); // 在请求池中删除该条请求
-        this.addPendingRequest(config); // 重新添加进请求池等待下一次请求
+        // get请求, 若存在重复，则取消之前已发的请求
+        const cancelToken = pendingRequest.get(requestKey);
+        cancelToken(requestKey);
+        pendingRequest.delete(requestKey);
+        this.addPendingRequest(config);
       } else {
-        // 为post则允许重复提交
+        // 允许重复提交
         if (!config.repeat) throw new Error('操作太频繁，请稍等片刻~');
         config.cancelToken =
           config.cancelToken ||
@@ -160,11 +159,12 @@ export default class Ajax {
     }
   }
 
-  // 清空请求池，业务中可以通过在routerbefore中new Ajax().cleanPendingRequest()来加上路由切换取消所有请求的需求
+  // 清空请求池,业务中可以通过在routerbefore中new Ajax().cleanPendingRequest()
+  // 来加上路由切换取消所有请求的需求
   cleanPendingRequest() {
     if (!pendingRequest.size < 0) return;
     for (const [requestKey, cancel] of pendingRequest) {
-      if (isArray(cancel)) {
+      if (Array.isArray(cancel)) {
         cancel.forEach((cb) => cb(requestKey));
       } else {
         cancel(requestKey);
@@ -173,41 +173,34 @@ export default class Ajax {
     }
   }
 
-  // 增加response返回处理方法
+  // 增加response返回处理处理方法
   addResponseHandle(code, callback) {
-    if (!isFunction(callback)) {
-      throw new Error('添加response处理方法错误： callback must is a function! ');
+    if (typeof callback !== 'function') {
+      throw new Error('添加 response 处理方法错误： callback is not a function');
     }
     responseHandle.set(code, callback);
   }
 
-  // 设置缓存  ---> 只有当设置了缓存时间才设置缓存，否则不会进行缓存数据
-  setCache(config, data, cacheTime) {
-    if (cacheTime) {
-      const requestKey = this.generateReqKey(config);
-      responseMap.set(requestKey, { time: Date.now() + cacheTime, data });
-    }
-  }
-
   // 获取缓存数据
   getCache(config) {
+    // 2、没取到返回null
     const requestKey = this.generateReqKey(config);
-    const data = responseMap.get(requestKey) || null;
-    if (!data) return null;
-    if (data.time < Date.now()) {
-      // 如果过期则清楚缓存，返回null。 否则返回缓存数据
+    const cacheData = JSON.parse(responseMap.get(requestKey) || null);
+    if (!cacheData) return null;
+    // 3、取到判断过期状态，如果过期清除缓存返回null，否则返回缓存数据
+    if (cacheData.time < Date.now()) {
       responseMap.delete(requestKey);
       return null;
     }
-    return data.data;
+    return cacheData.data;
   }
 
-  // 默认的loading
-  onLoading(option) {
-    return {
-      start: () => console.log(`开启loading，参数：${option}`),
-      close: () => console.log(`关闭loading`),
-    };
+  // 设置缓存
+  setCache(config, data, cacheTime) {
+    if (cacheTime) {
+      const requestKey = this.generateReqKey(config);
+      responseMap.set(requestKey, JSON.stringify({ time: Date.now() + cacheTime, data }));
+    }
   }
 
   // 开启loading
@@ -233,16 +226,24 @@ export default class Ajax {
   }
 
   // 获取token
-  getToekn() {
+  getToken() {
     return storage.localStorage.getItem('token');
   }
 
-  // 发送请求前设置参数, 可重写该方法
+  // 默认的loading
+  onLoading(option) {
+    return {
+      start: console.log(`开启loading，参数: ${option}`),
+      close: console.log('关闭loading'),
+    };
+  }
+
+  // 发起请求前设置headers
   onBefore(config) {
     console.log(config);
   }
 
-  // 默认的请求响应处理方法(默认执行响应处理列表内的函数处理返回值，可重写该方法)
+  // 默认的请求响应处理方法(默认执行响应处理列表内的函数处理返回值，可以重写onAfter)
   onAfter(res) {
     const { code } = res;
     const callback = responseHandle.get(code) || responseHandle.get('default');
@@ -251,17 +252,17 @@ export default class Ajax {
 
   // 默认错误处理方法
   onError(error) {
-    console.log(error.message);
+    console.error(error.message);
   }
 
-  // 处理http异常
+  // 处理HTTP异常
   httpErrorStatusHandle(error) {
-    // 处理被取消的请求，取消请求不执行时onError
+    // 处理被取消的请求,取消请求不执行onError
     if (axios.isCancel(error)) {
       const [method, url] = error.message.split('&');
-      console.log(`取消${method.toUpperCase()} 请求:${url}`);
+      console.error(`取消 ${method.toUpperCase()} 请求：${url}`);
+      return;
     }
-
     let message = '';
     if (error && error.response) {
       switch (error.response.status) {
@@ -272,13 +273,13 @@ export default class Ajax {
           message = '参数不正确！';
           break;
         case 401:
-          message = '您未登录，或登录已超时，请先登录！';
+          message = '您未登录，或者登录已经超时，请先登录！';
           break;
         case 403:
           message = '您没有权限操作！';
           break;
         case 404:
-          message = `请求地址出错：${error.response.config.url}`;
+          message = `请求地址出错: ${error.response.config.url}`;
           break;
         case 408:
           message = '请求超时！';
@@ -319,21 +320,27 @@ export default class Ajax {
   async request(config, options) {
     const cacheData = this.getCache(config);
     const onAfter = options.onAfter || this.defaultOptions.onAfter;
-    // 有缓存则直接用缓存，无需loading，要放在try/catch外面，否则会执行finally，导致关闭loading
+    // 有缓存直接取缓存，不需要loading，必须放在try/catch外面，否则会执行finally，导致关闭loading错误
     if (cacheData) return cacheData;
     try {
       // 无缓存的情况下调用接口，添加loading
       this.startLoading(options.loading);
-      const res = await this.axiosInstance(config); // 当前实例的配置对象
+      const res = await this.axiosInstance(config);
+      // 此处用来测试接口延迟情况的loading
+      // await new Promise((resolve) => {
+      //   setTimeout(() => {
+      //     resolve();
+      //   }, 2000);
+      // });
       // 是否直接返回整个返回值
       if (options.needHeaders) return res;
-      // 对于第三方接口及返回非标准格式，则直接返回，不做处理
+      // 对于第三方接口以及返回非标准格式 直接返回，不做处理
       if (options.thirdPartRequest) return res.data;
-      // 特殊返回值格式直接返回， 例如：文件下载返回的是 -> 文件流/url地址
-      if (!res.data || res.data instanceof ArrayBuffer || !isObject(res.data)) return res;
+      // 特殊返回值格式直接返回，例如：文件下载返回的是 -> 文件流/URL地址
+      if (!res.data || res.data instanceof ArrayBuffer || typeof res.data !== 'object') return res;
       // 返回onAfter执行的结果
       const result = onAfter(res.data);
-      // 其他数据走cache onAfter
+      // 缓存数据
       this.setCache(res.config, result, options.cacheTime);
       return result;
     } catch (error) {
@@ -344,29 +351,71 @@ export default class Ajax {
     }
   }
 
-  // get请求， 支持cache缓存， loading， 重复请求提示
+  // get请求，支持cache缓存、loading、重复请求提示
   get(url, params = {}, options = {}) {
-    const { loading, onAfter, cacheTime, thirdPartRequest, needHeaders, ...args } = options;
-    const config = { method: 'get', url, params, ...args };
-    return this.request(config, {
-      loading,
-      onAfter,
-      cacheTime,
-      thirdPartRequest,
-      needHeaders,
-    });
+    const { loading, onAfter, cacheTime, thirdPartRequest, needHeaders, ...arg } = options;
+    const config = { method: 'get', url, params, ...arg };
+    return this.request(config, { loading, onAfter, cacheTime, thirdPartRequest, needHeaders });
   }
 
-  // post请求，支持cache缓存， loading， 重复请求提示
+  // post请求，支持cache缓存、loading、重复请求提示
   post(url, data = {}, options = {}) {
     const { loading, onAfter, cacheTime, thirdPartRequest, needHeaders, ...arg } = options;
     const config = { method: 'post', url, data, ...arg };
-    return this.request(config, {
-      loading,
-      onAfter,
-      cacheTime,
-      thirdPartRequest,
-      needHeaders,
-    });
+    return this.request(config, { loading, onAfter, cacheTime, thirdPartRequest, needHeaders });
+  }
+
+  // 文件上传，仅支持loading
+  upload(url, data = {}, options = {}) {
+    const { loading, onAfter, ...arg } = options;
+    const config = {
+      method: 'post',
+      url,
+      data,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        ...arg.headers,
+      },
+      timeout: 10 * 60 * 1000, // 文件上传默认10分钟超时
+      repeat: true, // 文件上传默认允许重复提交
+      ...arg,
+    };
+    return this.request(config, { loading, onAfter });
+  }
+
+  // poll(url, params = {}, options = {}) {
+  //   const { autoStart, async, number, interval, loading, onAfter, thirdPartRequest, needHeaders, ...arg } = options;
+  //   const config = { method: 'get', url, params, ...arg };
+  //   const pollerWorker = new Polling({
+  //     taskFn: () => this.request(config, { loading, onAfter, thirdPartRequest, needHeaders }),
+  //     autoStart,
+  //     async,
+  //     number,
+  //     interval,
+  //   });
+  //   return pollerWorker;
+  // }
+
+  // 文件下载,支持loading、重复请求提示，请求成功文件自动下载（文件的文件名由后端定义返回在响应头中，前端不做处理）
+  async downloadFile(url, data = {}, options = {}) {
+    // 支持直接传入url和参数，拼接成url地址
+    if (options.isSplice) {
+      const params = { [this.tokenName]: this.getToken(), ...data };
+      this.defaultOptions.onDownloadFile(`${this.baseURL}${url}?${Qs.stringify(params, { indices: false })}`, options);
+      return;
+    }
+    const { loading, ...arg } = options;
+    const config = {
+      method: 'post',
+      url,
+      data,
+      repeat: true, // 文件上传默认允许重复提交
+      timeout: 10 * 60 * 1000, // 文件下载默认10分钟超时
+      ...arg,
+    };
+    const res = await this.request(config, { loading });
+    const type = res.headers['content-type'];
+    const filename = res.headers['content-disposition'].match(/filename\**=(.+\.[a-zA-Z]+)$/)[1];
+    this.defaultOptions.onDownloadFile(res.data, { type, filename });
   }
 }

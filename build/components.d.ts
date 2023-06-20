@@ -28,6 +28,8 @@ declare module '@vue/runtime-core' {
     TInputNumber: typeof import('tdesign-vue-next')['InputNumber']
     TLayout: typeof import('tdesign-vue-next')['Layout']
     TMenuItem: typeof import('tdesign-vue-next')['MenuItem']
+    TRadio: typeof import('tdesign-vue-next')['Radio']
+    TRadioGroup: typeof import('tdesign-vue-next')['RadioGroup']
     TSpace: typeof import('tdesign-vue-next')['Space']
     TSubmenu: typeof import('tdesign-vue-next')['Submenu']
   }

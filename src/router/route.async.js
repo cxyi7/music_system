@@ -1,11 +1,11 @@
 // 需要鉴权的路由，开发时使用本地，生产时使用接口返回数据生成路由
 const asyncRoutes = [
-  {
-    path: '/',
-    name: 'home',
-    meta: { title: '数据大屏', isFullScreen: true },
-    component: () => import('@/views/home/index.vue'),
-  },
+  // {
+  //   path: '/',
+  //   name: 'home',
+  //   meta: { title: '数据大屏', isFullScreen: true },
+  //   component: () => import('@/views/home/index.vue'),
+  // },
   {
     path: '/analysis',
     name: 'analysis',

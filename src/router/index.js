@@ -3,11 +3,12 @@ import NProgress from 'nprogress';
 import api from '@/service';
 import pinia from '@/store';
 import useUserStore from '@/store/user';
+import storage from '../utils/storage';
 
 // 引入不同的路由地址
-import asyncRoutes, { isAsyncRoute } from '@/router/routeAsync';
-import commonRoutes from '@/router/routeCommon';
-import errorRoutes from '@/router/routeError';
+import asyncRoutes, { isAsyncRoute } from '@/router/route.async';
+import commonRoutes from '@/router/route.common';
+import exceptionRoutes from '@/router/route.exception';
 
 const routes = [
   // 无鉴权的路由放在最前面
@@ -15,7 +16,7 @@ const routes = [
   // 需要鉴权的路由放中间
   ...asyncRoutes,
   // 异常路由必须放在最后面
-  ...errorRoutes,
+  ...exceptionRoutes,
 ];
 
 const userStore = useUserStore(pinia);
@@ -42,6 +43,8 @@ router.beforeEach(async (to, from, next) => {
     NProgress.start();
   }
   try {
+    const token = storage.localStorage.getItem(import.meta.env.VITE_TOKEN_NAME);
+    if (to.name === 'login' && token) return next('/');
     // 权限路由需要用户信息
     if (isAsyncRoute(to.name)) {
       await userStore.getUserInfo();
@@ -65,6 +68,7 @@ router.beforeEach(async (to, from, next) => {
     }
     next();
   } catch (error) {
+    storage.localStorage.removeItem(import.meta.env.VITE_TOKEN_NAME);
     next('/login');
   }
 });

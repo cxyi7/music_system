@@ -37,7 +37,7 @@ const useUserStore = defineStore('admin', {
     },
     // 退出登录
     async logout() {
-      await api.post('/auth/logout');
+      // await api.post('/auth/logout');
       this.$reset(); // 退出后重置信息
     },
   },

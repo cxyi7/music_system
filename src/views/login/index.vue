@@ -26,6 +26,14 @@
             </template>
           </t-input>
         </t-form-item>
+        <t-form-item name="code">
+          <t-input v-model="formData.code" placeholder="">
+            <template #suffix>
+              <!-- <img :src="imgCode" class="login-form-code" @click.stop="getImgCode" /> -->
+              <div class="login-form-code" @click.stop="getImgCode" v-html="imgCode"></div>
+            </template>
+          </t-input>
+        </t-form-item>
         <t-form-item style="padding-top: 8px">
           <t-button theme="primary" type="submit" block>登录</t-button>
         </t-form-item>
@@ -37,6 +45,8 @@
 import { MessagePlugin } from 'tdesign-vue-next';
 import { DesktopIcon, LockOnIcon } from 'tdesign-icons-vue-next';
 import useUserStore from '@/store/user';
+import api from '@/service';
+import jsencrypt from '@/utils/jsencrypt';
 
 export default {
   name: 'Login',
@@ -50,6 +60,7 @@ const iconStyle = {
 
 const userStore = useUserStore();
 const router = useRouter();
+const imgCode = ref(null);
 
 // 校验规则
 const rules = {
@@ -63,17 +74,32 @@ const formData = reactive({
   password: '',
 });
 
+// 获取验证码
+const getImgCode = async () => {
+  const res = await api.get('/captcha');
+  imgCode.value = res.img;
+  formData.uuid = res.uuid;
+};
+
 // 登录
 const onSubmit = async ({ validateResult, firstError, e }) => {
   e.preventDefault();
   if (validateResult) {
-    await userStore.login(formData);
-    router.push('/');
+    try {
+      const password = jsencrypt(formData.password);
+      await userStore.login({ ...formData, password });
+      router.push('/');
+    } catch (error) {
+      getImgCode();
+    }
   } else {
-    console.log('Validate Errors: ', firstError, validateResult);
     MessagePlugin.error(firstError);
   }
 };
+
+onMounted(() => {
+  getImgCode();
+});
 </script>
 
 <style lang="less" scoped>

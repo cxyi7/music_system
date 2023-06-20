@@ -28,7 +28,7 @@
 import { MessagePlugin } from 'tdesign-vue-next';
 import { findLast } from 'lodash';
 import useUserStore from '@/store/user';
-import asyncRoutes from '@/router/routeAsync';
+import asyncRoutes from '@/router/route.async';
 import storage from '@/utils/storage';
 
 const logoImg = new URL('../assets/images/logo.png', import.meta.url).href;

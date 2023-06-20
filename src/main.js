@@ -15,6 +15,11 @@ import 'video.js/dist/video-js.css';
 
 const app = createApp(App);
 
+// 异常处理
+app.config.errorHandler = (err, vm, info) => {
+  console.error('[全局异常]', err, vm, info);
+};
+
 // pinia 必须在 router 之前
 app.use(pinia);
 app.use(router);

@@ -1,6 +1,10 @@
 // 错误页面 ---> 需要放在最后面
 const errorRoutes = [
   {
+    path: '/',
+    redirect: '/analysis',
+  },
+  {
     path: '/403',
     name: '403',
     meta: { title: '您无访问权限！', isFullScreen: true },

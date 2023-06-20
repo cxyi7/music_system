@@ -20,8 +20,8 @@ export default defineConfig((env) => {
     },
     server: {
       host: true, // host设置为true才可以使用network的形式，以ip访问项目
-      port: 3000, // 使用的端口号
-      strictPort: false, // 当端口号被占用时，尝试下一个可用端口
+      port: 8083, // 使用的端口号
+      strictPort: true, // 当端口号被占用时，尝试下一个可用端口
       open: true, // 自动打开浏览器
       cors: true, // 允许跨域
       proxy: {

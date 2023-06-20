@@ -15,7 +15,6 @@ function getStorageObj(storage) {
      */
     setItem(key, value, exp = '') {
       const curTime = Date.now();
-      console.log(curTime);
       storage.setItem(key, JSON.stringify({ data: value, time: curTime, exp }));
     },
 
@@ -50,7 +49,7 @@ function getStorageObj(storage) {
      * @param {string} key 对应的key
      */
     removeItem(key) {
-      Storage.removeItem(key);
+      storage.removeItem(key);
     },
 
     /**

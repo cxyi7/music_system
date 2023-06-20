@@ -1,7 +1,7 @@
-import { LoadingPlugin } from 'tdesign-vue-next';
+import { NotifyPlugin } from 'tdesign-vue-next';
 import { throttle } from 'lodash';
 import storage from '../utils/storage';
-import Http from './http';
+import Http from './http.js';
 import router from '@/router';
 import Loading from '../utils/loading';
 
@@ -13,21 +13,27 @@ const loginExpired = throttle((error) => {
 
 const ajax = new Http(`${import.meta.env.VITE_API_BASEURL}`, {
   tokenName: 'MUSIC-TOKEN',
-  paramExclude: ['current'],
+  parmasExclude: ['current'],
   onBefore(config) {
-    config.headers['x-client-channel'] = 'pc'; // 自定义头部信息 --> 登录设备为pc端
+    // 设置登陆设备类型
+    config.headers['x-client-channel'] = 'pc';
+    config.headers['Cache-Control'] = 'no-cache';
+    // config.headers['x-system-code'] = import.meta.env.VITE_SYSTEM_CODE;
     // 设置token
-    const token = storage.localStorage.getItem('MUSIC-TOKEN'); // 拿到token值
-    if (token) config.headers[token.tokenName] = token.tokenValue;
+
+    const token = storage.localStorage.getItem('MUSIC-TOKEN');
+    if (token) config.headers.Authorization = token.tokenValue;
   },
   onLoading(options) {
-    return Loading(options, 3000);
+    return Loading(options, 200);
   },
   onError(error) {
-    LoadingPlugin('error', { title: '错误', content: error.message, closeBtn: true });
+    NotifyPlugin('error', { title: '错误', content: error.message, closeBtn: true });
   },
 });
-
 ajax.addResponseHandle(401, loginExpired);
+ajax.addResponseHandle(500, (error) => {
+  throw new Error(error.msg);
+});
 
 export default ajax;
